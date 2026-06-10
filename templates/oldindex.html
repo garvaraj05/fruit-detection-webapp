@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fruit Detection App</title>
+</head>
+<body>
+
+    <h1>Fruit Detection App</h1>
+
+    <form action="/predict"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <input type="file"
+               name="image"
+               required>
+
+        <button type="submit">
+            Detect Fruits
+        </button>
+
+    </form>
+
+    {% if result_image %}
+
+        <h2>Result</h2>
+
+        <img
+        src="{{ url_for('static',
+        filename='results/' + result_image) }}"
+        width="700">
+
+    {% endif %}
+
+</body>
+</html>

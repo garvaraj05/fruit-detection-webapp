@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Fruit Detection App</title>
+
+
+<style>
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        font-family:Segoe UI, sans-serif;
+        min-height:100vh;
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:30px;
+    }
+
+    .container{
+        background:white;
+        width:900px;
+        max-width:100%;
+        padding:35px;
+        border-radius:20px;
+        box-shadow:0 15px 40px rgba(0,0,0,0.2);
+        text-align:center;
+    }
+
+    h1{
+        color:#333;
+        margin-bottom:10px;
+    }
+
+    .subtitle{
+        color:#777;
+        margin-bottom:25px;
+    }
+
+    .upload-box{
+        border:3px dashed #667eea;
+        border-radius:15px;
+        padding:30px;
+        margin-bottom:20px;
+    }
+
+    input[type=file]{
+        font-size:16px;
+    }
+
+    button{
+        margin-top:15px;
+        background:#667eea;
+        color:white;
+        border:none;
+        padding:14px 30px;
+        border-radius:10px;
+        font-size:16px;
+        cursor:pointer;
+        transition:.3s;
+    }
+
+    button:hover{
+        transform:translateY(-2px);
+    }
+
+    .result-card{
+        margin-top:30px;
+        padding:20px;
+        border-radius:15px;
+        background:#f8f9fa;
+    }
+
+    img{
+        margin-top:15px;
+        max-width:100%;
+        border-radius:12px;
+    }
+
+    footer{
+        margin-top:20px;
+        color:#777;
+        font-size:14px;
+    }
+
+    .loader{
+        display:none;
+        margin-top:20px;
+    }
+
+    .result-container{
+    display:flex;
+    gap:30px;
+    margin-top:30px;
+    align-items:flex-start;
+}
+
+.image-section{
+    flex:2;
+}
+
+.info-section{
+    flex:1;
+    background:#f4f4f4;
+    padding:20px;
+    border-radius:12px;
+}
+
+.info-section ul{
+    list-style:none;
+    padding:0;
+}
+
+.info-section li{
+    padding:10px;
+    margin-bottom:10px;
+    background:white;
+    border-radius:8px;
+    font-weight:bold;
+}
+.dark{
+    background:#121212;
+    color:white;
+}
+
+.dark .container{
+    background:#1e1e1e;
+    color:white;
+}
+</style>
+
+<script>
+
+function showLoader(){
+    document.getElementById("loader").style.display="block";
+}
+
+function previewImage(event){
+
+    let reader = new FileReader();
+
+    reader.onload = function(){
+
+        let output = document.getElementById("preview");
+
+        output.src = reader.result;
+        output.style.display = "block";
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function toggleMode(){
+
+    document.body.classList.toggle("dark");
+
+}
+
+</script>
+
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<h1>Fruit Detection App</h1>
+
+<p class="subtitle">
+    Upload an image and detect fruits using YOLOv8
+</p>
+
+<form
+    action="/predict"
+    method="POST"
+    enctype="multipart/form-data"
+    onsubmit="showLoader()"
+>
+
+    <div class="upload-box" id="drop-area">
+
+    <p>Drag & Drop Image Here</p>
+    <p>OR</p>
+
+    <input
+        type="file"
+        id="imageInput"
+        name="image"
+        accept="image/*"
+        onchange="previewImage(event)"
+        required>
+
+    <br>
+
+    <img id="preview"
+         style="display:none;max-width:300px;margin-top:15px;border-radius:10px;">
+
+    <br>
+
+    <button type="submit">
+        Detect Fruits
+    </button>
+
+</div>
+
+</form>
+
+<div id="loader" class="loader">
+    🔍 Detecting fruits...
+</div>
+
+{% if result_image %}
+
+<div class="result-container">
+
+    <div class="image-section">
+
+        <h2>Detection Result</h2>
+
+        <img src="{{ url_for('static',
+        filename='results/' + result_image) }}">
+
+    </div>
+
+    <div class="info-section">
+
+        <h2>Detected Fruits</h2>
+
+        <ul>
+
+            {% for item in detections %}
+
+            <li>
+                {{ item.name }}
+                -
+                {{ item.confidence }}%
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</div>
+<br><br>
+
+<a href="{{ url_for('static',
+filename='results/' + result_image) }}"
+download>
+
+    <button>
+        Download Result
+    </button>
+
+</a>
+
+{% endif %}
+
+
+<footer>
+    Built using Flask + YOLOv8
+</footer>
+
+
+</div>
+
+</body>
+</html>
