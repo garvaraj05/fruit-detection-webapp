@@ -19,7 +19,7 @@ A Flask-based web application that uses a custom YOLOv8 model to detect fruits f
 - HTML
 - CSS
 
-## Model Classes
+## Model Classe
 
 - Apple
 - Banana
@@ -27,3 +27,5 @@ A Flask-based web application that uses a custom YOLOv8 model to detect fruits f
 - Orange
 - Pineapple
 - Watermelon
+
+- Test Here: https://huggingface.co/spaces/garvaraj05/fruit-detection-app
